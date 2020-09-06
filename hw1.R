@@ -1,3 +1,6 @@
+install.packages("readr")
+library(readr)
+
 #We initialize the arrays
 titles <- vector(mode = "character", length = 21)
 n_words <- vector(mode = "numeric", length = 21)
