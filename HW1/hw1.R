@@ -1,4 +1,4 @@
-install.packages("readr")
+#install.packages("readr")
 library(readr)
 
 #We initialize the arrays
@@ -24,9 +24,8 @@ for (book_file_name in book_file_names) {
   frame[index, 1] <- substring(title, 8)
 
   #We get the word count
-  splitted <- strsplit(book_text, " ")
-  splitted
-  frame[index, 2] <- length(splitted[[1]])
+  splitted_words <- strsplit(book_text, " ")
+  frame[index, 2] <- length(splitted_words[[1]])
 
   #We get the characters' count
   frame[index, 3] <- nchar(book_text)
