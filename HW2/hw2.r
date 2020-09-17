@@ -60,13 +60,31 @@ is_valid_matrix = function(matrix) {
   return(has_valid_size(matrix) && non_negative_matrix(matrix) && matrix_rows_sum_to_one(matrix))
 }
 
+germline_to_index = function(germline) {
+  x = c("A", "G", "T", "C")
+  return(which(x == germline))
+}
+
+equation_three = function(germline, mutated_germline, transition_matrix) {
+  if (!are_sequences_comparable(germline, mutated_germline))
+    stop("Sequences are not comparable.")
+
+  if (!is_valid_matrix(transition_matrix))
+    stop("Matrix is not valid.")
+
+  sum = 0
+  for (index in 1:len(germline)) {
+    sum = sum + log(transition_matrix[germline_to_index(mutated_germline), germline_to_index(germline)])
+  }
+
+  return (sum)
+}
 
 
-printf <- function(...) invisible(print(sprintf(...)))
+#printf <- function(...) invisible(print(sprintf(...)))
 items = c(0.93, 0.05, 0.01, 0.01,
 0.05, 0.93, 0.01, 0.01,
 0.01, 0.01, 0.93, 0.05,
 0.01, 0.01, 0.05, 0.93)
 transition_matrix = matrix(items, nrow = 4, byrow = TRUE)
-
-is_valid_matrix(transition_matrix) 
+transition_matrix
