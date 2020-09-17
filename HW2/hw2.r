@@ -73,7 +73,7 @@ equation_three = function(germline, mutated_germline, transition_matrix) {
     stop("Matrix is not valid.")
 
   sum = 0
-  for (index in 1:len(germline)) {
+  for (index in 1:nchar(germline)) {
     sum = sum + log(transition_matrix[germline_to_index(mutated_germline), germline_to_index(germline)])
   }
 
@@ -125,3 +125,16 @@ experimental_condition_mean_b = mean(get_number_of_mutations(germline,type_b_seq
 experimental_condition_standard_deviation_a = sd(get_number_of_mutations(germline,type_a_sequences))
 experimental_condition_standard_deviation_b = sd(get_number_of_mutations(germline,type_b_sequences))
 
+
+get_likelihood_of_mutations = function(germline, transition_matrix, sequences ){
+  return (sapply( sequences , FUN= function(sequence){
+    equation_three(germline,sequence,transition_matrix)
+  } ))
+}
+
+transition_matrix = matrix(c(0.93, 0.05, 0.01, 0.01,
+          0.05, 0.93, 0.01, 0.01,
+          0.01, 0.01, 0.93, 0.05,
+          0.01, 0.01, 0.05, 0.93),
+   nrow = 4, byrow = TRUE)
+get_likelihood_of_mutations(germline,transition_matrix,type_a_sequences)
