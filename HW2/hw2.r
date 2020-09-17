@@ -77,11 +77,11 @@ equation_three = function(germline, mutated_germline, transition_matrix) {
     sum = sum + log(transition_matrix[germline_to_index(mutated_germline), germline_to_index(germline)])
   }
 
-  return (sum)
+  return(sum)
 }
 
 
-#printf <- function(...) invisible(print(sprintf(...)))
+printf <- function(...) invisible(print(sprintf(...)))
 items = c(0.93, 0.05, 0.01, 0.01,
 0.05, 0.93, 0.01, 0.01,
 0.01, 0.01, 0.93, 0.05,
@@ -95,4 +95,33 @@ transition_matrix
 #   3) Read Sequence 
 #*******************************************************************
 sequences = read.csv("sequences.csv")
-head(sequences)
+
+#No t calling read_file(to avoid that the germline.txt may not be placed in the test directory)
+germline = "GCAGCACCAGATGAACTAGTAAGCGCAGAAGTCTGTCACACTTGAGGAGTTCATAACGATGCGTCAGCGGGCCTGGTTTACAGGCTAGATCTTATATCTAATAAGGACTCTGCGCACCTCGCTATCTTGCCCGACTTTCGCTTCAAAAAGAGGTGGGTGGGAAAATCTCACCCGTTCTCATCGTATCAGTAGCGGTCGCT"
+
+#******************************* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+#   4) Calculate & Report
+#*******************************************************************
+#*******************************************************************
+#   4) a) Calculate Number of mutations, mean & standard deviation for Seq A/B
+#*******************************************************************
+
+#We could basically do 1:100 for a and 101:200 for b, but let's suppose the A & B are merged in the .csv
+get_sequences_of_type = function(sequences_df, type) {
+  indices = which(sequences_df$type==type)
+  return(sequences_df$seqs[indices])
+}
+
+type_a_sequences = get_sequences_of_type(sequences,"a")
+type_b_sequences = get_sequences_of_type(sequences,"b")
+  
+get_number_of_mutations = function(germline, sequences){
+  return (sapply(sequences,FUN = number_of_mutations,germline ))   
+}
+
+experimental_condition_mean_a = mean(get_number_of_mutations(germline,type_a_sequences))
+experimental_condition_mean_b = mean(get_number_of_mutations(germline,type_b_sequences))
+
+experimental_condition_standard_deviation_a = sd(get_number_of_mutations(germline,type_a_sequences))
+experimental_condition_standard_deviation_b = sd(get_number_of_mutations(germline,type_b_sequences))
+
