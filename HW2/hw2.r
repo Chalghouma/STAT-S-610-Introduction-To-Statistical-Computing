@@ -88,3 +88,11 @@ items = c(0.93, 0.05, 0.01, 0.01,
 0.01, 0.01, 0.05, 0.93)
 transition_matrix = matrix(items, nrow = 4, byrow = TRUE)
 transition_matrix
+
+
+
+#*******************************************************************
+#   3) Read Sequence 
+#*******************************************************************
+sequences = read.csv("sequences.csv")
+head(sequences)
