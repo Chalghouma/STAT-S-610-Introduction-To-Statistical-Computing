@@ -1,3 +1,9 @@
+library(readr)
+writefile = function(message){
+  write_file("\n","output.txt",TRUE)
+  write_file(message,"output.txt",TRUE)
+}
+write_file("","output.txt")
 #*******************************************************************
 #   1) Mutations' number 
 #*******************************************************************
@@ -60,7 +66,7 @@ is_valid_matrix = function(matrix) {
   return(has_valid_size(matrix) && non_negative_matrix(matrix) && matrix_rows_sum_to_one(matrix))
 }
 
-germline_to_index = function(germline) {
+nucleotide_to_index = function(germline) {
   x = c("A", "G", "T", "C")
   return(which(x == germline))
 }
@@ -74,7 +80,12 @@ equation_three = function(germline, mutated_germline, transition_matrix) {
 
   sum = 0
   for (index in 1:nchar(germline)) {
-    sum = sum + log(transition_matrix[germline_to_index(mutated_germline), germline_to_index(germline)])
+    # writefile(paste("index = ",index))
+    # writefile(paste("T[",mutated_germline,",",germline,"]"))
+    # writefile(paste("T[",nucleotide_to_index(mutated_germline),",",nucleotide_to_index(germline),"]"))
+    mutated_nucleotide = nucleotide_to_index(substr(mutated_germline,index,index))
+    germline_nucleotide = nucleotide_to_index(substr(germline,index,index))
+    sum = sum + log(transition_matrix[mutated_nucleotide,germline_nucleotide])
   }
 
   return(sum)
@@ -119,13 +130,19 @@ get_number_of_mutations = function(germline, sequences){
   return (sapply(sequences,FUN = number_of_mutations,germline ))   
 }
 
-experimental_condition_mean_a = mean(get_number_of_mutations(germline,type_a_sequences))
-experimental_condition_mean_b = mean(get_number_of_mutations(germline,type_b_sequences))
+experimental_condition_type_a_num_mutations = get_number_of_mutations(germline,type_a_sequences)
+experimental_condition_type_b_num_mutations = get_number_of_mutations(germline,type_b_sequences) 
 
-experimental_condition_standard_deviation_a = sd(get_number_of_mutations(germline,type_a_sequences))
-experimental_condition_standard_deviation_b = sd(get_number_of_mutations(germline,type_b_sequences))
+experimental_condition_mean_a = mean(experimental_condition_type_a_num_mutations)
+experimental_condition_mean_b = mean(experimental_condition_type_b_num_mutations)
+
+experimental_condition_standard_deviation_a = sd(experimental_condition_type_a_num_mutations)
+experimental_condition_standard_deviation_b = sd(experimental_condition_type_b_num_mutations)
 
 
+#*******************************************************************
+#   4) b) Usage of likelihood-bases statistic for Seq A/B
+#*******************************************************************
 get_likelihood_of_mutations = function(germline, transition_matrix, sequences ){
   return (sapply( sequences , FUN= function(sequence){
     equation_three(germline,sequence,transition_matrix)
@@ -137,4 +154,22 @@ transition_matrix = matrix(c(0.93, 0.05, 0.01, 0.01,
           0.01, 0.01, 0.93, 0.05,
           0.01, 0.01, 0.05, 0.93),
    nrow = 4, byrow = TRUE)
-get_likelihood_of_mutations(germline,transition_matrix,type_a_sequences)
+statistic_type_a_sequences = get_likelihood_of_mutations(germline,transition_matrix,type_a_sequences)
+statistic_type_b_sequences = get_likelihood_of_mutations(germline,transition_matrix,type_b_sequences)
+
+statistic_mean_a = mean(statistic_type_a_sequences)
+statistic_mean_b = mean(statistic_type_b_sequences)
+
+statistic_standard_deviation_a = sd(statistic_type_a_sequences)
+statistic_standard_deviation_b = sd(statistic_type_b_sequences)
+
+#******************************* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+#   5) Test difference between sequences: [By Number of Mutations]
+#*******************************************************************
+t.test(experimental_condition_type_a_num_mutations,experimental_condition_type_b_num_mutations)
+
+
+#******************************* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+#   6) Test difference between sequences: [By Likelihood]
+#*******************************************************************
+t.test(statistic_type_a_sequences,statistic_type_b_sequences)
