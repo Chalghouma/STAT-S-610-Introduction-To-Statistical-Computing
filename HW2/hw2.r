@@ -1,9 +1,3 @@
-library(readr)
-writefile = function(message){
-  write_file("\n","output.txt",TRUE)
-  write_file(message,"output.txt",TRUE)
-}
-write_file("","output.txt")
 #*******************************************************************
 #   1) Mutations' number 
 #*******************************************************************
@@ -25,7 +19,7 @@ are_sequences_comparable = function(seq1, seq2) {
       && is_sequence_valid(seq2)
     )
 }
-areSequencesIdenticalAt = function(seq1, seq2, index) {
+are_nucleotides_identical = function(seq1, seq2, index) {
   return(substr(seq1, index, index) == substr(seq2, index, index))
 }
 number_of_mutations = function(seq1, seq2) {
@@ -34,7 +28,7 @@ number_of_mutations = function(seq1, seq2) {
 
   n_mutations = 0
   for (index in 1:nchar(seq1))
-    if (substr(seq1, index, index) != substr(seq2, index, index)) {
+    if (!are_nucleotides_identical(seq1, seq2, index)) {
       n_mutations = n_mutations + 1
     }
   return(n_mutations)
@@ -80,26 +74,13 @@ equation_three = function(germline, mutated_germline, transition_matrix) {
 
   sum = 0
   for (index in 1:nchar(germline)) {
-    # writefile(paste("index = ",index))
-    # writefile(paste("T[",mutated_germline,",",germline,"]"))
-    # writefile(paste("T[",nucleotide_to_index(mutated_germline),",",nucleotide_to_index(germline),"]"))
-    mutated_nucleotide = nucleotide_to_index(substr(mutated_germline,index,index))
-    germline_nucleotide = nucleotide_to_index(substr(germline,index,index))
-    sum = sum + log(transition_matrix[mutated_nucleotide,germline_nucleotide])
+    mutated_nucleotide = nucleotide_to_index(substr(mutated_germline, index, index))
+    germline_nucleotide = nucleotide_to_index(substr(germline, index, index))
+    sum = sum + log(transition_matrix[mutated_nucleotide, germline_nucleotide])
   }
 
   return(sum)
 }
-
-
-printf <- function(...) invisible(print(sprintf(...)))
-items = c(0.93, 0.05, 0.01, 0.01,
-0.05, 0.93, 0.01, 0.01,
-0.01, 0.01, 0.93, 0.05,
-0.01, 0.01, 0.05, 0.93)
-transition_matrix = matrix(items, nrow = 4, byrow = TRUE)
-transition_matrix
-
 
 
 #*******************************************************************
@@ -107,7 +88,7 @@ transition_matrix
 #*******************************************************************
 sequences = read.csv("sequences.csv")
 
-#No t calling read_file(to avoid that the germline.txt may not be placed in the test directory)
+#Not calling read_file(to avoid that the germline.txt may not be placed in the test directory)
 germline = "GCAGCACCAGATGAACTAGTAAGCGCAGAAGTCTGTCACACTTGAGGAGTTCATAACGATGCGTCAGCGGGCCTGGTTTACAGGCTAGATCTTATATCTAATAAGGACTCTGCGCACCTCGCTATCTTGCCCGACTTTCGCTTCAAAAAGAGGTGGGTGGGAAAATCTCACCCGTTCTCATCGTATCAGTAGCGGTCGCT"
 
 #******************************* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
@@ -119,34 +100,33 @@ germline = "GCAGCACCAGATGAACTAGTAAGCGCAGAAGTCTGTCACACTTGAGGAGTTCATAACGATGCGTCAGC
 
 #We could basically do 1:100 for a and 101:200 for b, but let's suppose the A & B are merged in the .csv
 get_sequences_of_type = function(sequences_df, type) {
-  indices = which(sequences_df$type==type)
+  indices = which(sequences_df$type == type)
   return(sequences_df$seqs[indices])
 }
 
-type_a_sequences = get_sequences_of_type(sequences,"a")
-type_b_sequences = get_sequences_of_type(sequences,"b")
-  
-get_number_of_mutations = function(germline, sequences){
-  return (sapply(sequences,FUN = number_of_mutations,germline ))   
+type_a_sequences = get_sequences_of_type(sequences, "a")
+type_b_sequences = get_sequences_of_type(sequences, "b")
+
+get_number_of_mutations = function(germline, sequences) {
+  return(sapply(sequences, FUN = number_of_mutations, germline))
 }
 
-experimental_condition_type_a_num_mutations = get_number_of_mutations(germline,type_a_sequences)
-experimental_condition_type_b_num_mutations = get_number_of_mutations(germline,type_b_sequences) 
+experimental_condition_type_a_num_mutations = get_number_of_mutations(germline, type_a_sequences)
+experimental_condition_type_b_num_mutations = get_number_of_mutations(germline, type_b_sequences)
 
-experimental_condition_mean_a = mean(experimental_condition_type_a_num_mutations)
-experimental_condition_mean_b = mean(experimental_condition_type_b_num_mutations)
+ec_a_num_mutations_mean = mean(experimental_condition_type_a_num_mutations)
+ec_b_num_mutations_mean = mean(experimental_condition_type_b_num_mutations)
 
-experimental_condition_standard_deviation_a = sd(experimental_condition_type_a_num_mutations)
-experimental_condition_standard_deviation_b = sd(experimental_condition_type_b_num_mutations)
-
+ec_a_num_mutations_sd = sd(experimental_condition_type_a_num_mutations)
+ec_b_num_mutations_sd = sd(experimental_condition_type_b_num_mutations)
 
 #*******************************************************************
 #   4) b) Usage of likelihood-bases statistic for Seq A/B
 #*******************************************************************
-get_likelihood_of_mutations = function(germline, transition_matrix, sequences ){
-  return (sapply( sequences , FUN= function(sequence){
-    equation_three(germline,sequence,transition_matrix)
-  } ))
+get_likelihood_of_mutations = function(germline, transition_matrix, sequences) {
+  return(sapply(sequences, FUN = function(sequence) {
+    equation_three(germline, sequence, transition_matrix)
+  }))
 }
 
 transition_matrix = matrix(c(0.93, 0.05, 0.01, 0.01,
@@ -154,8 +134,8 @@ transition_matrix = matrix(c(0.93, 0.05, 0.01, 0.01,
           0.01, 0.01, 0.93, 0.05,
           0.01, 0.01, 0.05, 0.93),
    nrow = 4, byrow = TRUE)
-statistic_type_a_sequences = get_likelihood_of_mutations(germline,transition_matrix,type_a_sequences)
-statistic_type_b_sequences = get_likelihood_of_mutations(germline,transition_matrix,type_b_sequences)
+statistic_type_a_sequences = get_likelihood_of_mutations(germline, transition_matrix, type_a_sequences)
+statistic_type_b_sequences = get_likelihood_of_mutations(germline, transition_matrix, type_b_sequences)
 
 statistic_mean_a = mean(statistic_type_a_sequences)
 statistic_mean_b = mean(statistic_type_b_sequences)
@@ -163,13 +143,27 @@ statistic_mean_b = mean(statistic_type_b_sequences)
 statistic_standard_deviation_a = sd(statistic_type_a_sequences)
 statistic_standard_deviation_b = sd(statistic_type_b_sequences)
 
+#To display the results reported on the .pdf, set to true
+if (FALSE) {
+  ec_a_num_mutations_mean
+  ec_b_num_mutations_mean
+  ec_a_num_mutations_sd
+  ec_b_num_mutations_sd
+
+  statistic_mean_a
+  statistic_mean_b
+  statistic_standard_deviation_a
+  statistic_standard_deviation_b
+}
 #******************************* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 #   5) Test difference between sequences: [By Number of Mutations]
 #*******************************************************************
-t.test(experimental_condition_type_a_num_mutations,experimental_condition_type_b_num_mutations)
+t.test(experimental_condition_type_a_num_mutations, experimental_condition_type_b_num_mutations)
 
 
 #******************************* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 #   6) Test difference between sequences: [By Likelihood]
 #*******************************************************************
-t.test(statistic_type_a_sequences,statistic_type_b_sequences)
+t.test(statistic_type_a_sequences, statistic_type_b_sequences)
+
+
