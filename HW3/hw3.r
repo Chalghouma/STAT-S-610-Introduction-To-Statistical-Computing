@@ -79,4 +79,22 @@ get_bills_number_of_Yea_df = function(votes_df) {
   return(data.frame(bill_ids,numbers))
 }
 
-head(get_bills_number_of_Yea_df(votes_initial_df))
+#head(get_bills_number_of_Yea_df(votes_initial_df))
+#************************************************
+#Question 4) 
+#************************************************
+string_fraction_to_number= function(stringified_fraction,total_number_of_votes){
+    splitted = unlist(strsplit(stringified_fraction, "/"))
+    return (as.integer(as.numeric(splitted[1]) / as.numeric(splitted[2])*total_number_of_votes))
+}
+get_required_votes_array = function(stringified_vector,total_number_of_votes){
+    return (lapply(stringified_vector,FUN = string_fraction_to_number,total_number_of_votes))
+}
+
+calculate_and_append_required_votes = function(bills_df,total_number_of_votes){
+    required_stringified_colun = bills_df[,4]$requires
+    bills_df$calculated = unlist(get_required_votes_array(required_stringified_colun,total_number_of_votes))
+    return(bills_df)
+}
+
+head(calculate_and_append_required_votes(bills_initial_df,101))
