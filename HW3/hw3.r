@@ -42,7 +42,7 @@ append_measure_activity = function(members_df, bills_df) {
   measure_of_activity = occurences_of_members_in_bills(bills_subjects, last_names)
   return(cbind(members_df, measure_of_activity))
 }
-#head(append_measure_activity(members_initial_df,bills_initial_df))
+head(append_measure_activity(members_initial_df,bills_initial_df))
 
 
 #************************************************
@@ -139,5 +139,6 @@ append_matching_activities_to_members_df = function(votes_df, bills_df, members_
     return(members_df) 
 }
 
-m = head(append_matching_activities_to_members_df(votes_initial_df,bills_initial_df,members_initial_df))
-m
+members_initial_df= append_matching_activities_to_members_df(votes_initial_df,bills_initial_df,members_initial_df)
+members_initial_df= append_measure_activity(members_initial_df,bills_initial_df)
+members_initial_df
