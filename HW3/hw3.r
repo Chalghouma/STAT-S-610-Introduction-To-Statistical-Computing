@@ -4,7 +4,7 @@ library(reshape2)
 library(dplyr)
 
 bills_initial_df = read_csv('HW3/bills.csv')
-votes_initial_df = read_csv('HW3/votes.csv')
+votes_initial_df = data.frame(unclass(read_csv('HW3/votes.csv'))) #Somehow does the same effect as stringAsFactors=FALSE
 members_initial_df = read_csv('HW3/members.csv')
 
 get_last_names_from_members = function(members_df) {
@@ -76,25 +76,69 @@ get_bills_number_of_Yea_df = function(votes_df) {
     number_of_yea = get_number_of_Yea(vote_vector)
     numbers = append(numbers, number_of_yea)
   }
-  return(data.frame(bill_ids,numbers))
+  return(data.frame(bill_ids, numbers))
 }
 
 #head(get_bills_number_of_Yea_df(votes_initial_df))
 #************************************************
 #Question 4) 
 #************************************************
-string_fraction_to_number= function(stringified_fraction,total_number_of_votes){
-    splitted = unlist(strsplit(stringified_fraction, "/"))
-    return (as.integer(as.numeric(splitted[1]) / as.numeric(splitted[2])*total_number_of_votes))
+string_fraction_to_number = function(stringified_fraction, total_number_of_votes) {
+  splitted = unlist(strsplit(stringified_fraction, "/"))
+  return(as.integer(as.numeric(splitted[1]) / as.numeric(splitted[2]) * total_number_of_votes))
 }
-get_required_votes_array = function(stringified_vector,total_number_of_votes){
-    return (lapply(stringified_vector,FUN = string_fraction_to_number,total_number_of_votes))
-}
-
-calculate_and_append_required_votes = function(bills_df,total_number_of_votes){
-    required_stringified_colun = bills_df[,4]$requires
-    bills_df$calculated = unlist(get_required_votes_array(required_stringified_colun,total_number_of_votes))
-    return(bills_df)
+get_required_votes_array = function(stringified_vector, total_number_of_votes) {
+  return(lapply(stringified_vector, FUN = string_fraction_to_number, total_number_of_votes))
 }
 
-head(calculate_and_append_required_votes(bills_initial_df,101))
+calculate_and_append_required_votes = function(bills_df, total_number_of_votes) {
+  required_stringified_colun = bills_df[, 4]$requires
+  bills_df$calculated = unlist(get_required_votes_array(required_stringified_colun, total_number_of_votes))
+  return(bills_df)
+}
+
+head(calculate_and_append_required_votes(bills_initial_df, 101))
+#************************************************
+#Question 5) 
+#************************************************
+get_senator_votes_df = function(votes_df, senator_id) {
+  return(melt(dplyr::filter(votes_df, id == senator_id), id.vars = c("id"), variable.name = "bill_id", value.name = "Voting Result"))
+}
+bill_ids_and_results = function(bills_df) {
+  bills_results = result = bills_df[, 5]$result
+  bills_acceptance = unlist(sapply(bills_results, FUN = is_bill_accepted))
+  return(data.frame(bill_id = bills_df[, 8]$vote_id, result = bills_df[, 5]$result, bills_acceptance))
+}
+is_bill_accepted = function(result) {
+  return(stringr::str_detect(result, "Agreed") || stringr::str_detect(result, "Passed"))
+}
+vote_matches_result = function(vote, result) {
+  return((vote == "Yea" && is_bill_accepted(result) || (vote == "Nay" && !is_bill_accepted(result))))
+}
+calculate_vote_matches_result_for_row = function(row){
+    vote = row[3]
+    result = row[4]
+    return (vote_matches_result(vote,result))
+}
+show_vote_matching = function(merged_df){
+    return(apply(merged_df,1,FUN= calculate_vote_matches_result_for_row))
+}
+get_matching_activity = function(merged_df){
+    matching =show_vote_matching(merged_df) 
+    return(length(matching[matching == TRUE]))
+}
+bills_df1 = get_senator_votes_df(votes_initial_df, "S010")
+bills_df2 = bill_ids_and_results(bills_initial_df)
+merged = merge(bills_df1, bills_df2, by.x = "bill_id", by.y = "bill_id")
+class(bills_df1$bill_id)
+class(bills_df2$bill_id)
+head(bills_df1)
+head(bills_df2)
+head(merged,6)
+head(get_matching_activity(merged))
+#intersect(as.character(bills_df1$bill_id), as.character(bills_df2$bill_id))
+
+#head(get_senator_votes_df(votes_initial_df, "S010"))
+#head(bill_ids_and_results(bills_initial_df))
+is_bill_accepted('')
+# melt(votes_initial_df, id.vars=c("id"))
