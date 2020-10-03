@@ -115,30 +115,29 @@ is_bill_accepted = function(result) {
 vote_matches_result = function(vote, result) {
   return((vote == "Yea" && is_bill_accepted(result) || (vote == "Nay" && !is_bill_accepted(result))))
 }
-calculate_vote_matches_result_for_row = function(row){
-    vote = row[3]
-    result = row[4]
-    return (vote_matches_result(vote,result))
+calculate_vote_matches_result_for_row = function(row) {
+  vote = row[3]
+  result = row[4]
+  return(vote_matches_result(vote, result))
 }
-show_vote_matching = function(merged_df){
-    return(apply(merged_df,1,FUN= calculate_vote_matches_result_for_row))
+show_vote_matching = function(merged_df) {
+  return(apply(merged_df, 1, FUN = calculate_vote_matches_result_for_row))
 }
-get_matching_activity = function(merged_df){
-    matching =show_vote_matching(merged_df) 
-    return(length(matching[matching == TRUE]))
+get_matching_activity = function(merged_df) {
+  matching = show_vote_matching(merged_df)
+  return(length(matching[matching == TRUE]))
 }
-bills_df1 = get_senator_votes_df(votes_initial_df, "S010")
-bills_df2 = bill_ids_and_results(bills_initial_df)
-merged = merge(bills_df1, bills_df2, by.x = "bill_id", by.y = "bill_id")
-class(bills_df1$bill_id)
-class(bills_df2$bill_id)
-head(bills_df1)
-head(bills_df2)
-head(merged,6)
-head(get_matching_activity(merged))
-#intersect(as.character(bills_df1$bill_id), as.character(bills_df2$bill_id))
+get_matching_activity_of_member = function(member_name, votes_df, bills_df, members_df) {
+  bills_df1 = get_senator_votes_df(votes_initial_df,member_name)
+  bills_df2 = bill_ids_and_results(bills_initial_df)
+  merged = merge(bills_df1, bills_df2, by.x = "bill_id", by.y = "bill_id")
+  return(get_matching_activity(merged))
+}
+append_matching_activities_to_members_df = function(votes_df, bills_df, members_df) {
+    matching_activities= unlist(sapply(members_df[,3]$id,FUN=get_matching_activity_of_member,votes_df,bills_df,members_df))
+    members_df$matching_activities =matching_activities
+    return(members_df) 
+}
 
-#head(get_senator_votes_df(votes_initial_df, "S010"))
-#head(bill_ids_and_results(bills_initial_df))
-is_bill_accepted('')
-# melt(votes_initial_df, id.vars=c("id"))
+m = head(append_matching_activities_to_members_df(votes_initial_df,bills_initial_df,members_initial_df))
+m
