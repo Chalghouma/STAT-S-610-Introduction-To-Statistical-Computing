@@ -21,9 +21,14 @@ llr <- function(x, y, z, omega) {
 #' @param omega (numeric) must be a scalar
 #' @return (numeric) scalar
 compute_f_hat <- function(z, x, y, omega) {
-  Wz <- make_weight_matrix(z, x, omega)
+  WzDiagonal <- make_diagonal_weight(z, x, omega)
   X <- make_predictor_matrix(x)
-  f_hat <- c(1, z) %*% solve(t(X) %*% Wz %*% X) %*% t(X) %*% Wz %*% y
+
+  m1 = multiply_diagonal_vector_by_matrix(WzDiagonal, X)
+  m2 = t(multiply_diagonal_vector_by_matrix(WzDiagonal,y))
+  first = t(X) %*%m1
+  second = t(X) %*% m2
+  f_hat <- c(1, z) %*% solve(t(X) %*%m1) %*% t(X) %*% m2
   return(f_hat)
 }
 
@@ -32,11 +37,33 @@ compute_f_hat <- function(z, x, y, omega) {
 #' @param omega (numeric) must be a scalar
 #' @return (numeric) a diagonal matrix
 make_weight_matrix <- function(z, x, omega) {
-  r <- abs(x - z) / omega  # this is a vector of the same length as x
-  w <- sapply(r, W)  # this is a vector of the same length as x and r
-  Wz <- diag(w)  # this is a diagonal matrix with elements from w
+  r <- abs(x - z) / omega # this is a vector of the same length as x
+  w <- sapply(r, W) # this is a vector of the same length as x and r
+  Wz <- diag(w) # this is a diagonal matrix with elements from w
   return(Wz)
 }
+
+make_diagonal_weight <- function(z, x, omega) {
+  r <- abs(x - z) / omega # this is a vector of the same length as x
+  w <- sapply(r, W) # this is a vector of the same length as x and r
+  return(w)
+}
+
+multiply_diagonal_vector_by_matrix <- function(diagonal_vector, matrix) {
+  if (is.vector(matrix)) {
+    matrix = matrix(matrix, ncol = 1)
+  }
+  range = 1:length(diagonal_vector)
+
+  multiply_row = function(index) {
+    diagonal_element = diagonal_vector[index]
+    matrix_row = matrix[index,]
+    return(matrix_row * diagonal_element)
+  }
+  return(t(sapply(range, FUN = multiply_row)))
+}
+
+
 
 #' @param r (numeric) must be a scalar
 #' @return (numeric) scalar
