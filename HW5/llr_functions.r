@@ -25,10 +25,11 @@ compute_f_hat <- function(z, x, y, omega) {
   X <- make_predictor_matrix(x)
 
   m1 = multiply_diagonal_vector_by_matrix(WzDiagonal, X)
-  m2 = t(multiply_diagonal_vector_by_matrix(WzDiagonal,y))
-  first = t(X) %*%m1
+  first = t(X) %*% m1
+  m2 = WzDiagonal * y
+  
   second = t(X) %*% m2
-  f_hat <- c(1, z) %*% solve(t(X) %*%m1) %*% t(X) %*% m2
+  f_hat <- c(1, z) %*% solve(t(X) %*% m1) %*% t(X) %*% m2
   return(f_hat)
 }
 
@@ -60,10 +61,9 @@ multiply_diagonal_vector_by_matrix <- function(diagonal_vector, matrix) {
     matrix_row = matrix[index,]
     return(matrix_row * diagonal_element)
   }
-  return(t(sapply(range, FUN = multiply_row)))
+  r = (sweep(matrix, 1, diagonal_vector, "*"))
+  return(r)
 }
-
-
 
 #' @param r (numeric) must be a scalar
 #' @return (numeric) scalar
