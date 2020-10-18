@@ -51,11 +51,6 @@ make_diagonal_weight <- function(z, x, omega) {
 }
 
 multiply_diagonal_vector_by_matrix <- function(diagonal_vector, matrix) {
-  if (is.vector(matrix)) {
-    matrix = matrix(matrix, ncol = 1)
-  }
-  range = 1:length(diagonal_vector)
-
   r = (sweep(matrix, 1, diagonal_vector, "*"))
   return(r)
 }
