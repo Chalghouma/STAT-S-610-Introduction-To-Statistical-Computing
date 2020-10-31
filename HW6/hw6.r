@@ -42,4 +42,9 @@ report_mle_results = function(X, starting_thetas , criterion){
 
 data = c(−2.09 , −2.68, −1.92, −1.76, −2.12, 2.21, 1.97, 1.61, 1.99, 2.18)
 thetas = c(-2,-1,0,1,2)
-report_mle_results( data , thetas , 0.1 )
+# report_mle_results( data , thetas , 0.1 )
+
+one_step_estimation = function(X){
+    theta = median(X)
+    return (theta - derivative_log_likelihood(X,theta) / second_derivative_log_likelihood(X,theta))
+}
