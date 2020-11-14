@@ -38,6 +38,30 @@ generate_y_i = function(Xi, p, n) {
 
 generate_y_i(X[[1]], 10, n)
 
+
+generate_Y = function(X,p,n){
+
+}
+
+#Question 3 - Generate LogLikelihood - Gradient - Hessian
+y_log_likelihood = function(Xi, Bi,yi, n){
+    e1 = -n * log(2*pi)/2
+    e2 = -n * log(1)
+    e3 = - t(yi - Xi %*% Bi) %*% (yi - Xi %*% Bi )/2
+    return (e1+e2+e3)
+}
+
+y_gradient_log_likelihood = function(Xi, Bi, yi ){
+    return (t(Xi)  %*% (yi - Xi %*% Bi) )
+}
+
+y_hessian = function(Xi){
+    return (-t(Xi) %*% Xi)
+}
+
+
+
+
 # x_vec = seq(-3, 3, length.out = n)
 # fx = generate_normal_dist(n)
 # print(fx)
