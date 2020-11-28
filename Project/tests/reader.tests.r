@@ -32,7 +32,6 @@ test_that('Should match authorities for year 2002', {
 })
 
 test_that('Should match authorities for year 2001', {
-  auth_value_case_id_30288 = NA
   authority_vector = get_auth_by_year(auth_df, 2001)
-  expect_equal(auth_value_case_id_30288, authority_vector[30288])
+  expect_equal(is.na( authority_vector[30288]),TRUE)
 })
