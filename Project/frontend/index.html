@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Babylon Template</title>
+    <style>
+      html,
+      body {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+    </style>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+  </head>
+  <body>
+    <canvas id="renderCanvas" touch-action="none"></canvas>
+    <!-- touch-action="none" for best results from PEP -->
+    <script>
+      const process = () => {
+        const canvas = document.getElementById("renderCanvas"); // Get the canvas element
+        const engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
+        // Add your code here matching the playground format
+        const drawCurve = (X, Y, size, scene) => {
+          //TODO, check whether it's not NA
+          const startX = X[0];
+          const endX = X[X.length - 1];
+          const startY = Y[0];
+          const endY = Y[Y.length - 1];
+          const vectors = [];
+          let maxY =0;
+          Y.forEach((y) => {
+            if (maxY < y) maxY = y;
+          });
+          console.log('maxY = ');
+          console.log(maxY)
+
+          X.forEach((x, index) => {
+            if (x !== "NA") {
+              const y = Y[index];
+              const scaledX = (x - startX) / (endX - startX);
+              const scaledY = (y - startY) / (maxY - startY);
+              vectors.push(
+                new BABYLON.Vector3(scaledX * size, scaledY * size, 0)
+              );
+            }
+          });
+
+          BABYLON.Mesh.CreateLines("data", vectors, scene);
+        };
+        // show axis
+        const showAxis = function (size, scene) {
+          var makeTextPlane = function (text, color, size) {
+            var dynamicTexture = new BABYLON.DynamicTexture(
+              "DynamicTexture",
+              50,
+              scene,
+              true
+            );
+            dynamicTexture.hasAlpha = true;
+            dynamicTexture.drawText(
+              text,
+              5,
+              40,
+              "bold 36px Arial",
+              color,
+              "transparent",
+              true
+            );
+            var plane = new BABYLON.Mesh.CreatePlane(
+              "TextPlane",
+              size,
+              scene,
+              true
+            );
+            plane.material = new BABYLON.StandardMaterial(
+              "TextPlaneMaterial",
+              scene
+            );
+            plane.material.backFaceCulling = false;
+            plane.material.specularColor = new BABYLON.Color3(0, 0, 0);
+            plane.material.diffuseTexture = dynamicTexture;
+            return plane;
+          };
+
+          var axisX = BABYLON.Mesh.CreateLines(
+            "axisX",
+            [
+              new BABYLON.Vector3.Zero(),
+              new BABYLON.Vector3(size, 0, 0),
+              new BABYLON.Vector3(size * 0.95, 0.05 * size, 0),
+              new BABYLON.Vector3(size, 0, 0),
+              new BABYLON.Vector3(size * 0.95, -0.05 * size, 0),
+            ],
+            scene
+          );
+          axisX.color = new BABYLON.Color3(1, 0, 0);
+          var xChar = makeTextPlane("X", "red", size / 10);
+          xChar.position = new BABYLON.Vector3(0.9 * size, -0.05 * size, 0);
+          var axisY = BABYLON.Mesh.CreateLines(
+            "axisY",
+            [
+              new BABYLON.Vector3.Zero(),
+              new BABYLON.Vector3(0, size, 0),
+              new BABYLON.Vector3(-0.05 * size, size * 0.95, 0),
+              new BABYLON.Vector3(0, size, 0),
+              new BABYLON.Vector3(0.05 * size, size * 0.95, 0),
+            ],
+            scene
+          );
+          axisY.color = new BABYLON.Color3(0, 1, 0);
+          var yChar = makeTextPlane("Y", "green", size / 10);
+          yChar.position = new BABYLON.Vector3(0, 0.9 * size, -0.05 * size);
+          var axisZ = BABYLON.Mesh.CreateLines(
+            "axisZ",
+            [
+              new BABYLON.Vector3.Zero(),
+              new BABYLON.Vector3(0, 0, size),
+              new BABYLON.Vector3(0, -0.05 * size, size * 0.95),
+              new BABYLON.Vector3(0, 0, size),
+              new BABYLON.Vector3(0, 0.05 * size, size * 0.95),
+            ],
+            scene
+          );
+          axisZ.color = new BABYLON.Color3(0, 0, 1);
+          var zChar = makeTextPlane("Z", "blue", size / 10);
+          zChar.position = new BABYLON.Vector3(0, 0.05 * size, 0.9 * size);
+        };
+        const createScene = () => {
+          var scene = new BABYLON.Scene(engine);
+          const camera = new BABYLON.ArcRotateCamera(
+            "camera1",
+            Math.PI / 4,
+            Math.PI / 4,
+            5,
+            BABYLON.Vector3.Zero(),
+            scene
+          );
+          camera.setTarget(BABYLON.Vector3.Zero());
+
+          // This attaches the camera to the canvas
+          camera.attachControl(canvas, true);
+          scene.createDefaultEnvironment();
+
+          // Add a camera to the scene and attach it to the canvas
+          // Add a lights to the scene
+          //Your Code
+          socket = new WebSocket("ws://localhost:5000/");
+          socket.onopen = function () {
+            socket.send("hello");
+          };
+          socket.onmessage = function (s) {
+            console.log("Received data:");
+            console.log(s);
+            const response = JSON.parse(s.data);
+            const attributeNames = response.attributes.names.value;
+            const dataValuePaylod = JSON.parse(s.data).value;
+            const yearInterval = dataValuePaylod[0].value;
+            const authorithies = dataValuePaylod[1].value;
+            drawCurve(yearInterval, authorithies, 4, scene);
+            console.log("attr names");
+            console.log(attributeNames);
+          };
+
+          showAxis(4, scene);
+          return scene;
+        };
+        const scene = createScene(); //Call the createScene function
+        // Register a render loop to repeatedly render the scene
+        engine.runRenderLoop(function () {
+          scene.render();
+        });
+        // Watch for browser/canvas resize events
+        window.addEventListener("resize", function () {
+          engine.resize();
+        });
+      };
+      process();
+    </script>
+  </body>
+</html>
