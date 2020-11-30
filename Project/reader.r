@@ -1,6 +1,7 @@
 source('Project/selector.r')
+source('Project/ws.r')
 library(readr)
-
+library(jsonlite)
 
 read_auth = function(path = 'Project/data/authmat.txt') {
   df = read.csv(path)
@@ -14,11 +15,13 @@ get_auth_by_year = function(auth_df, year) {
   return(auth_df[, (year - 1800) + 1 + 1])
 }
 
-plot_case = function(authority_df, case_id, year_interval, plot_function = plot, type = 'l', pch = 22, lty = 2, col = 'black') {
+plot_case = function(authority_df, case_id, year_interval, plot_function = plot, type = 'l', pch = 22, lty = 2, col = 'black',onGraphProcessedCallback) {
   get_authority_for_case = function(year, case_id) {
     return(get_auth_by_year(authority_df, year)[case_id])
   }
   data = sapply(year_interval, FUN = get_authority_for_case, case_id)
+  print('onGraphProc')
+  onGraphProcessedCallback(year_interval, data  )
 
   plot_function(data ~ year_interval, xlab = "Year Interval", ylab = "Authority score", pch = pch, lty = lty, col = col, type = type)
 }
@@ -28,7 +31,7 @@ brown_versus_mississipi = function() {
   plot_case(df, 18501, 1940:2000, plot)
 }
 
-plot_figure_10 = function() {
+plot_figure_10 = function(onGraphProcessedCallback) {
   brown_v_mississipi_case_id = 18501
   escobedo_v_illinois_case_id = 23115
   miranda_v_arizona_case_id = 23601
@@ -42,14 +45,21 @@ plot_figure_10 = function() {
   colors = c('blue', 'red', 'black', 'green')
   df = read_auth()
   indices = 1:length(case_ids)
-  pre_plot_case = function(index, authority_df, case_ids, year_interval, line_types, colors) {
+  pre_plot_case = function(index, authority_df, case_ids, year_interval, line_types, colors, onGraphProcessedCallback) {
     if (index == 1) plot_function = plot
     else plot_function = lines
-    plot_case(authority_df, case_ids[index], year_interval, plot_function, lty = line_types[index], col = colors[index])
+    plot_case(authority_df, case_ids[index], year_interval, plot_function, lty = line_types[index], col = colors[index], onGraphProcessedCallback = onGraphProcessedCallback)
   }
-  sapply(indices, FUN = pre_plot_case, df, case_ids, year_interval, line_types, colors)
+  sapply(indices, FUN = pre_plot_case, df, case_ids, year_interval, line_types, colors,onGraphProcessedCallback=onGraphProcessedCallback)
   legend(year_interval[1], 0.06, graph_labels, cex = 0.8, col = colors, pch = rep(21, 4), lty = rep(1, 4))
 }
 
-
-plot_figure_10()
+onWSReadyCallback= function(ws){
+  print('onWSReady')
+  onGraphProcessedCallback = function(year_interval, data){
+    print('onGraphProcessedCallback')
+    ws$send(serializeJSON(list(year_interval=year_interval,data=data)))
+  }
+  plot_figure_10(onGraphProcessedCallback)
+}
+launch_server(onWSReadyCallback)
