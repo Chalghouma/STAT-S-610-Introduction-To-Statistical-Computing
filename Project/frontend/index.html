@@ -26,36 +26,59 @@
     <canvas id="renderCanvas" touch-action="none"></canvas>
     <!-- touch-action="none" for best results from PEP -->
     <script>
+      const OFFSET = new BABYLON.Vector3(0.15, 0.15, 0);
+      const GRAPH_SIZE = 2;
       const process = () => {
         const canvas = document.getElementById("renderCanvas"); // Get the canvas element
         const engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
         // Add your code here matching the playground format
-        const drawCurve = (X, Y, size, scene) => {
+        const drawCurve = async (X, Y, size, parent, scene) => {
           //TODO, check whether it's not NA
           const startX = X[0];
           const endX = X[X.length - 1];
           const startY = Y[0];
           const endY = Y[Y.length - 1];
           const vectors = [];
-          let maxY =0;
+          let maxY = 0;
           Y.forEach((y) => {
             if (maxY < y) maxY = y;
           });
-          console.log('maxY = ');
-          console.log(maxY)
-
+          console.log("maxY = ");
+          console.log(maxY);
+          const SPHERE_SIZE = 0.05;
+          const YIELD_TIME = 1;
           X.forEach((x, index) => {
             if (x !== "NA") {
               const y = Y[index];
               const scaledX = (x - startX) / (endX - startX);
               const scaledY = (y - startY) / (maxY - startY);
-              vectors.push(
-                new BABYLON.Vector3(scaledX * size, scaledY * size, 0)
-              );
+              const position = new BABYLON.Vector3(
+                scaledX * size,
+                scaledY * size,
+                0
+              ).add(OFFSET);
+
+              vectors.push(position);
             }
           });
+          const spheres = [];
+          for (let index = 0; index < vectors.length; index++) {
+            const vector = vectors[index];
+            var sphere = BABYLON.MeshBuilder.CreateSphere(
+              "sphere",
+              { diameter: SPHERE_SIZE, segments: 16 },
+              scene
+            );
+            sphere.parent = parent;
+            sphere.position = vector;
+            const pr = new Promise((resolve) =>
+              setTimeout(resolve, YIELD_TIME)
+            );
+            spheres.push(sphere);
+            await pr;
+          }
 
-          BABYLON.Mesh.CreateLines("data", vectors, scene);
+          BABYLON.Mesh.CreateLines("data", vectors, scene).parent = parent;
         };
         // show axis
         const showAxis = function (size, scene) {
@@ -150,6 +173,7 @@
           // This attaches the camera to the canvas
           camera.attachControl(canvas, true);
           scene.createDefaultEnvironment();
+          scene.createDefaultLight();
 
           // Add a camera to the scene and attach it to the canvas
           // Add a lights to the scene
@@ -166,12 +190,27 @@
             const dataValuePaylod = JSON.parse(s.data).value;
             const yearInterval = dataValuePaylod[0].value;
             const authorithies = dataValuePaylod[1].value;
-            drawCurve(yearInterval, authorithies, 4, scene);
+            const centralBox = BABYLON.MeshBuilder.CreateBox(
+              "Center",.
+              { size: GRAPH_SIZE },
+              scene
+            );
+            var gizmoManager = new BABYLON.GizmoManager(scene);
+            gizmoManager.boundingBoxGizmoEnabled = true;
+            // Restrict gizmos to only spheres
+            gizmoManager.attachableMeshes = [centralBox];
+            drawCurve(
+              yearInterval,
+              authorithies,
+              GRAPH_SIZE,
+              centralBox,
+              scene
+            );
             console.log("attr names");
             console.log(attributeNames);
           };
 
-          showAxis(4, scene);
+          showAxis(GRAPH_SIZE + 0.5, scene);
           return scene;
         };
         const scene = createScene(); //Call the createScene function
