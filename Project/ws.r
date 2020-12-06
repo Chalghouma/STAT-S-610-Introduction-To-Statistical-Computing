@@ -1,5 +1,3 @@
-# install.packages('jsonlite')
-# install.packages('httpuv')
 library(jsonlite)
 library(httpuv)
 

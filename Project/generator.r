@@ -1,6 +1,3 @@
-# install.packages('spam')
-# install.packages('RSpectra')
-# library(arpack)
 library(RSpectra)
 source('Project/selector.r')
 source('Project/io/hubs_authorities.r')
