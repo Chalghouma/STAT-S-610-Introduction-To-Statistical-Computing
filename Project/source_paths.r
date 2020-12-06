@@ -4,6 +4,14 @@ get_reader_file_path = function(){
 get_selector_file_path = function(){
     return ('Project/selector.r')
 }
+#io
+get_citations_reader_file_path = function(){
+    return ('Project/io/citations_reader.r')
+}
+get_hubs_authorities_io_file_path = function(){
+    return ('Project/io/hubs_authorities.r')
+}
+
 #Generating
 get_generator_file_path = function(){
     return ('Project/generator.r')

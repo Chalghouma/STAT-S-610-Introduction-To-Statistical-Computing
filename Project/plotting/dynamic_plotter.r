@@ -6,14 +6,16 @@ source(get_reader_file_path())
 library(readr)
 library(jsonlite)
 
+calculate_authority_score_in_range = function(generated_authority_df, case_id,year){
 
+}
 plot_6 = function(onGraphProcessedCallback) {
   case_ids = c(21109, 25347)
   plotting_functions = get_plot_functions(length(case_ids), xLab = 'Years after Decision', yLab = 'Authority Score')
-  authority_df = read_auth()
+  authority_df = read_authorities_df_from_year_interval()
   judicial_df = read_judicial_data()
-
   graph_labels = get_graph_labels(case_ids, judicial_df)
+
   pre_plot_case = function(index, authority_df, case_ids, onGraphProcessedCallback) {
     plot_function = plotting_functions[[index]]
     case_id = case_ids[index]
@@ -47,16 +49,3 @@ plot_figure = function(case_ids,year_interval,onGraphProcessedCallback){
   legend(year_interval[1], 0.06, graph_labels, cex = 0.8, col = colors, pch = rep(21, length(case_ids)), lty = 1:length(case_ids))
 
 }
-
-plot_8 = function(onGraphProcessedCallback){
-  plot_figure(  case_ids = c(1861, 1156, 13828, 19238),year_interval =  1850:2000,onGraphProcessedCallback)
-}
-plot_9 = function(onGraphProcessedCallback){
-  plot_figure(  case_ids = c(13828, 1016, 1156, 19238, 19230),year_interval =  1950:1970,onGraphProcessedCallback)
-}
-plot_10 = function(onGraphProcessedCallback){
-  plot_figure(  case_ids = c(18501, 23115, 23601, 26918),year_interval =  1940:2000,onGraphProcessedCallback)
-}
-
-
-plot_6(function(X,Y){})

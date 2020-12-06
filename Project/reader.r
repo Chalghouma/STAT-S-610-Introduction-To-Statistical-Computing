@@ -1,6 +1,7 @@
-source('Project/selector.r')
+source('Project/source_paths.r')
+source(get_selector_file_path())
+source(get_plotter_file_path())
 source('Project/ws.r')
-source('Project/plotting/plotter.r')
 library(readr)
 library(jsonlite)
 
@@ -12,7 +13,8 @@ read_judicial_data = function() {
 read_auth = function(path = 'Project/data/authmat.txt') {
   df = read.csv(path)
 }
-
+auth=read_auth()
+head(auth)
 get_auth_by_year = function(auth_df, year) {
   #We already know the first year is 1800
   # if(year < 1800 )

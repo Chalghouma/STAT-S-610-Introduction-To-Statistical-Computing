@@ -1,4 +1,5 @@
-source('Project/reader.r')
+source('Project/source_paths.r')
+source(get_reader_file_path())
 library(testthat)
 
 library(readr)

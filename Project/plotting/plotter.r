@@ -1,4 +1,5 @@
-source('Project/plotting/utils.r')
+source('Project/source_paths.r')
+source(get_plotter_utils_file_path())
 
 get_plot_functions = function(number_of_functions, xLab = 'Year', yLab = 'Authority Score') {
   indexes = 1:number_of_functions

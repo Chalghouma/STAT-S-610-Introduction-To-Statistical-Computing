@@ -1,4 +1,5 @@
-source('Project/io/citations_reader.r')
+source('Project/source_paths.r')
+source(get_citations_reader_file_path())
 library(testthat)
 
 library(readr)

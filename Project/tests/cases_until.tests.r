@@ -1,4 +1,5 @@
-source('Project/selector.r')
+source('Project/source_paths.r')
+source(get_selector_file_path())
 library(testthat)
 
 library(readr)
