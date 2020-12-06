@@ -1,5 +1,6 @@
 source('Project/selector.r')
 source('Project/ws.r')
+source('Project/plotting/plotter.r')
 library(readr)
 library(jsonlite)
 
@@ -46,27 +47,25 @@ brown_versus_mississipi = function() {
   plot_case(df, 18501, 1940:2000, plot)
 }
 plot_figure_6 = function(onGraphProcessedCallback) {
-  brown_v_mississipi_case_id = 21109
-  escobedo_v_illinois_case_id = 25347
-
-
-  year_interval = 1940:2003
-  case_ids = c(brown_v_mississipi_case_id, escobedo_v_illinois_case_id)
-  line_types = c(2, 3)
-  graph_labels = c('Brown v. Board of Educ', 'Escobedo v. Illinois')
-  colors = c('blue', 'red')
+  case_ids = c(21109, 25347)
+  plotting_functions = plot_functions(length(case_ids), xLab = 'Year', yLab = 'Authority Score')
   authority_df = read_auth()
   judicial_df = read_judicial_data()
-  indices = 1:length(case_ids)
-  pre_plot_case = function(index, authority_df, case_ids, year_interval, line_types, colors, onGraphProcessedCallback) {
-    if (index == 1) plot_function = plot
-    else plot_function = lines
+
+  graph_labels = get_graph_labels(case_ids, judicial_df)
+  pre_plot_case = function(index, authority_df, case_ids, onGraphProcessedCallback) {
+    plot_function = plotting_functions[[index]]
+    case_id = case_ids[index]
+
     year_of_decision = case_data_by_id(case_ids[index], judicial_df)$year
+    years_after_decision = 30
     year_interval = year_of_decision:(year_of_decision + 30)
-    plot_case_for_6(authority_df, case_ids[index], year_interval, plot_function, lty = line_types[index], col = colors[index], onGraphProcessedCallback = onGraphProcessedCallback, xData = 0:30)
+    X = 0:years_after_decision
+    Y = calculate_authority_score_in_range(authority_df, case_id, year_interval)
+    plot_function(X, Y)
   }
-  sapply(indices, FUN = pre_plot_case, authority_df, case_ids, year_interval, line_types, colors, onGraphProcessedCallback = onGraphProcessedCallback)
-  legend(year_interval[1], 0.06, graph_labels, cex = 0.8, col = colors, pch = rep(21, 4), lty = rep(1, 4))
+  sapply(1:length(case_ids), FUN = pre_plot_case, authority_df, case_ids, onGraphProcessedCallback = onGraphProcessedCallback)
+  legend(20, 0.01, graph_labels, cex = 0.8, col = colors, pch = rep(21, 4), lty = 1:length(case_ids))
 }
 plot_figure_10 = function(onGraphProcessedCallback) {
   brown_v_mississipi_case_id = 18501
@@ -127,9 +126,9 @@ plot_figure_9 = function(onGraphProcessedCallback) {
 
   year_interval = 1950:1970
   case_ids = c(13828, 1016, 1156, 19238, 19230)
-  line_types = c(2, 3, 3, 3,3)
-  graph_labels = c('a','b','c','d','e')
-  colors = c('blue', 'red', 'black', 'green','black')
+  line_types = c(2, 3, 3, 3, 3)
+  graph_labels = c('a', 'b', 'c', 'd', 'e')
+  colors = c('blue', 'red', 'black', 'green', 'black')
 
   authority_df = read_auth()
   labels = sapply(case_ids, FUN = case_data_by_id, get_all_judicial_cases_data())
@@ -145,7 +144,7 @@ plot_figure_9 = function(onGraphProcessedCallback) {
 }
 
 
-plot_figure_9(function(a, b) { })
+# plot_figure_9(function(a, b) { })
 # plot_figure_8(function(a, b) { })
-# plot_figure_6(function(a, b) { })
+plot_figure_6(function(a, b) { })
 # plot_figure_10(function(a, b) { })

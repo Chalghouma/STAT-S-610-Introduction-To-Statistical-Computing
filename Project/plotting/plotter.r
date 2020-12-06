@@ -7,7 +7,7 @@ plot_functions = function(number_of_functions, xLab = 'Year', yLab = 'Authority 
     R_plot_function = get_R_plot_function_by_index(index)
     lty = index
     plotting_function = function(X, Y) {
-      plot_case(X, Y, R_plot_function, type = 'l', pch = 22, lty = lty, col = color, xLab = xLab, yLab = yLab)
+      display_function(X, Y, plot_function=R_plot_function, type = 'l', pch = 22, lty = lty, col = color, x_label = xLab, y_label = yLab)
     }
 
     return(plotting_function)
@@ -15,12 +15,6 @@ plot_functions = function(number_of_functions, xLab = 'Year', yLab = 'Authority 
   return (sapply(indexes, FUN = pre_plot_case))
 }
 
-plot_case = function(X, Y, plot_function = plot, type = 'l', pch = 22, lty = 2, col = 'black', xLab = 'Year', yLab = 'Authority Score') {
-  plot_function(Y ~ X, xlab = xLab, ylab = yLab, pch = pch, lty = lty, col = col, type = type)
+display_function = function(X, Y, plot_function = plot, type = 'l', pch = 22, lty = 2, col = 'black', x_label,y_label) {
+  plot_function(Y ~ X, xlab = x_label, ylab = y_label, pch = pch, lty = lty, col = col, type = type)
 }
-
-
-functions = plot_functions(1)
-functions[[1]](c(1,2,3),c(3,4,5))
-# functions = c(function(x) { return(x * 2) })
-# functions[[1]](9)
