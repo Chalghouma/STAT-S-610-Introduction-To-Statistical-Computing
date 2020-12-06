@@ -103,5 +103,28 @@ onWSReadyCallback = function(ws) {
 }
 # launch_server(onWSReadyCallback)
 
-plot_figure_6(function(a, b) { })
+plot_figure_8 = function(onGraphProcessedCallback){
+
+  year_interval = 1850:2000
+  case_ids=c(1861, 1156,13828,19238)
+  line_types = c(2, 3, 3, 3)
+  graph_labels = c('Brown v Mississippi', 'Escobedo v. Illinois', 'Miranda v. Arizona', 'Rhode Island v. Innis')
+  colors = c('blue', 'red', 'black', 'green')
+
+  authority_df = read_auth()
+  labels = sapply(case_ids, FUN = case_data_by_id, get_all_judicial_cases_data())
+  print(labels)
+  indices = 1:length(case_ids)
+  pre_plot_case = function(index, authority_df, case_ids, year_interval, line_types, colors, onGraphProcessedCallback,xData) {
+    if (index == 1) plot_function = plot
+    else plot_function = lines
+    plot_case(authority_df, case_ids[index], year_interval, plot_function, lty = line_types[index], col = colors[index], onGraphProcessedCallback = onGraphProcessedCallback,xData = xData)
+  }
+  sapply(indices, FUN = pre_plot_case, authority_df, case_ids, year_interval, line_types, colors, onGraphProcessedCallback = onGraphProcessedCallback, xData = year_interval)
+  legend(year_interval[1], 0.06, graph_labels, cex = 0.8, col = colors, pch = rep(21, 4), lty = rep(1, 4))
+}
+
+plot_figure_8(function(a,b){})
+
+# plot_figure_6(function(a, b) { })
 # plot_figure_10(function(a, b) { })
