@@ -1,6 +1,10 @@
 # install.packages('tidyverse')
 library(tidyverse)
 
+P = function(df, case_id){
+  return (df %>% filter(caseid == case_id))
+}
+
 cases_in_range = function(df, from, to) {
   return(df %>% filter(year >= from & year <= to))
 }
