@@ -14,7 +14,7 @@ test_that('', {
 })
 
 test_that('Given ids should have the correct years', {
-  expect_equal(case_data_by_id(my_data, 1)$year, 1754)
-  expect_equal(case_data_by_id(my_data, 16125)$year, 1923) 
-  expect_equal(case_data_by_id(my_data, 26226)$year, 1976) 
+  expect_equal(case_data_by_id(1,my_data)$year, 1754)
+  expect_equal(case_data_by_id(16125,my_data)$year, 1923)
+  expect_equal(case_data_by_id(26226,my_data)$year, 1976)
 })

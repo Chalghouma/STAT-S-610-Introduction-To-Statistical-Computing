@@ -1,8 +1,15 @@
 # install.packages('tidyverse')
 library(tidyverse)
 
-P = function(df, case_id){
-  return (df %>% filter(caseid == case_id))
+get_all_judicial_cases_data = function() {
+  csv_path = 'Project/data/judicial.csv'
+  cases = read_csv(csv_path)
+  my_data <- as_tibble(cases)
+  return (my_data)
+}
+
+case_data_by_id = function(case_id, df) {
+  return(df %>% filter(caseid == case_id))
 }
 
 cases_in_range = function(df, from, to) {
@@ -10,7 +17,7 @@ cases_in_range = function(df, from, to) {
 }
 cases_until = function(df, until) {
   first_year = df[1,]$year
-  return (cases_in_range(df,first_year,until))
+  return(cases_in_range(df, first_year, until))
 }
 
 parse_line = function(line) {
@@ -18,7 +25,7 @@ parse_line = function(line) {
   citing = splitted[1] %>% strtoi()
   cited = splitted[2] %>% strtoi()
 
-  return(list('citing'=citing,'cited'=cited))
+  return(list('citing' = citing, 'cited' = cited))
 }
 
 calculate_inward_outward = function(ids, file_path = 'Project/data/allcites.txt') {
@@ -32,7 +39,7 @@ calculate_inward_outward = function(ids, file_path = 'Project/data/allcites.txt'
     splitted = str_split(line, ' ')[[1]]
     citing = splitted[1] %>% strtoi()
     cited = splitted[2] %>% strtoi()
-    
+
     inward_vector[cited] = inward_vector[cited] + 1
     outward_vector[citing] = outward_vector[citing] + 1
   }
