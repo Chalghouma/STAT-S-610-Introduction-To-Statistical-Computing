@@ -27,3 +27,19 @@ read_authorities = function(year) {
 read_hubs = function(year) {
   return(read_vector(year, category = 'hub'))
 }
+
+read_authorities_df_from_year_interval = function(year_interval) {
+  max_rows = 30288
+  generated_authorities_df = data.frame(1:max_rows)
+  colnames(generated_authorities_df)=c('case_id')
+  for (year in year_interval) {
+    authorities = read_authorities(year)
+    padding = rep(0, max_rows - length(authorities))
+    generated_authorities_df[toString(year)] = append(authorities, padding)
+  }
+  return(generated_authorities_df)
+}
+
+get_authority_from_generated_authorities_df = function(generated_authorities_df, case_id , year){
+    return (generated_authorities_df[   ,toString(year)][case_id] )
+}
