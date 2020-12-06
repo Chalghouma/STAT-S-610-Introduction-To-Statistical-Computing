@@ -31,7 +31,6 @@ maximum_likelihood_estimate = function(X, criterion) {
 
   return(current_theta)
 }
-
 report_mle_results = function(X, starting_thetas, criterion) {
   for (i in 1:length(starting_thetas)) {
     mle = maximum_likelihood_estimate(X, starting_thetas[i], criterion)
@@ -42,8 +41,7 @@ report_mle_results = function(X, starting_thetas, criterion) {
 
 data = c(−2.09, −2.68, −1.92, −1.76, −2.12, 2.21, 1.97, 1.61, 1.99, 2.18)
 thetas = c(-2, -1, 0, 1, 2)
-# report_mle_results( data , thetas , 0.1 )
-
+# report_mle_results( data , thetas , 0.01 )
 one_step_estimation = function(X) {
   theta = median(X)
   return(theta - derivative_log_likelihood(X, theta) / second_derivative_log_likelihood(X, theta))
@@ -54,18 +52,19 @@ compare_methods_on_distribution = function(n, repetitions, criterion) {
   values_with_mle = c()
   values_with_one_step = c()
   for (iteration in 1:repetitions) {
-    print(paste('N =  (', n, ') iteration = ', iteration))
+    # if(n==1000)
+    # print(paste('N =  (', n, ') iteration = ', iteration))
     values_with_mle = append(values_with_mle, maximum_likelihood_estimate(X, criterion))
     values_with_one_step = append(values_with_one_step, one_step_estimation(X))
   }
   print('done')
-  print(paste('Variance With MLE Method over (', n, ') iterations = ', var(values_with_mle)))
-  print(paste('Variance With OneStepIteration Method over (', n, ') iterations = ', var(values_with_one_step)))
+  print(paste('Variance With MLE Method over (N=', n, ',iterations=',repetitions,') = ', var(values_with_mle)))
+  print(paste('Variance With OneStepIteration Method over (N=', n, ',iterations=',repetitions,') = ', var(values_with_one_step)))
 }
 
 
-repetitions = 5
-criterion = 0.1
+repetitions = 10
+criterion = 0.0000001
 n_values = c(10,100, 1000)
 sapply(n_values, FUN = compare_methods_on_distribution, repetitions, criterion)
 
