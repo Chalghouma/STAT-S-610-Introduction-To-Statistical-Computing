@@ -3,7 +3,7 @@
 # library(arpack)
 library(RSpectra)
 source('Project/selector.r')
-source('Project/io.r')
+source('Project/io/hubs_authorities.r')
 library(testthat)
 library(Matrix)
 library(readr)
@@ -70,9 +70,6 @@ compute_authority = function(matrix) {
 
   multiplied = sparse_A %*% sparse_tA
   print('multiplied calculated')
-  sparse_A = NULL
-  sparse_tA = NULL
-  gc()
   eigen_spectra = eigs(multiplied, k = 1, which = 'LM')
   print('eigs calculated')
   return(eigen_spectra$vectors[, 1])
@@ -133,8 +130,8 @@ plot_authorities_for_case = function(from, until, case_id) {
 # x = 1:3
 # y = 6:8
 # plot( y~ x,type='l')
-# plot_authorities_for_case(1940, 1960, 18501)
+plot_authorities_for_case(1940, 1960, 18501)
 
 #other stopped at 1965
-year_interval = 1965:1969
-sapply(year_interval, FUN = write_authority_hub_vectors, TRUE, FALSE)
+# year_interval = 1965:1969
+# sapply(year_interval, FUN = write_authority_hub_vectors, TRUE, FALSE)
