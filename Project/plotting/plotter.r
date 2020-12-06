@@ -1,6 +1,6 @@
 source('Project/plotting/utils.r')
 
-plot_functions = function(number_of_functions, xLab = 'Year', yLab = 'Authority Score') {
+get_plot_functions = function(number_of_functions, xLab = 'Year', yLab = 'Authority Score') {
   indexes = 1:number_of_functions
   pre_plot_case = function(index) {
     color = get_color_by_index(index)

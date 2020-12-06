@@ -1,11 +1,11 @@
-source('Project/selector.r')
+source('Project/io/citations_reader.r')
 library(testthat)
 
 library(readr)
 library(tidyverse)
 
 
-test_that('', {
+test_that('Should have the exact same inward/outward', {
   ids = c(1, 2, 3, 4)
   io = calculate_inward_outward(ids, './Project/tests/small_sample_1/allcities.txt')
   inward = io$inward_vector
@@ -17,7 +17,7 @@ test_that('', {
 
 
 
-test_that('a', {
+test_that('Is supposed to have the same inward/outward values. (But fails due to the .csv inconsistency', {
   cases = read_csv('Project/data/judicial.csv')
   my_data <- as_tibble(cases)
   projected = my_data %>% select(1, 9, 10)

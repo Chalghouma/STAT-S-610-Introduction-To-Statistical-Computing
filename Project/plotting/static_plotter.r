@@ -8,7 +8,7 @@ library(jsonlite)
 
 plot_figure_6 = function(onGraphProcessedCallback) {
   case_ids = c(21109, 25347)
-  plotting_functions = plot_functions(length(case_ids), xLab = 'Year', yLab = 'Authority Score')
+  plotting_functions = get_plot_functions(length(case_ids), xLab = 'Year', yLab = 'Authority Score')
   authority_df = read_auth()
   judicial_df = read_judicial_data()
 
@@ -31,7 +31,7 @@ plot_figure_6 = function(onGraphProcessedCallback) {
 plot_figure = function(case_ids,year_interval,onGraphProcessedCallback){ 
   authority_df = read_auth()
   judicial_df = read_judicial_data()
-  plotting_functions = plot_functions(length(case_ids), xLab = 'Year', yLab = 'Authority Score')
+  plotting_functions = get_plot_functions(length(case_ids), xLab = 'Year', yLab = 'Authority Score')
   graph_labels = get_graph_labels(case_ids, judicial_df)
 
   pre_plot_case = function(index, authority_df, case_ids, onGraphProcessedCallback) {
