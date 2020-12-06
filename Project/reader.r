@@ -68,28 +68,23 @@ plot_figure_6 = function(onGraphProcessedCallback) {
   legend(20, 0.01, graph_labels, cex = 0.8, col = colors, pch = rep(21, 4), lty = 1:length(case_ids))
 }
 plot_figure_10 = function(onGraphProcessedCallback) {
-  brown_v_mississipi_case_id = 18501
-  escobedo_v_illinois_case_id = 23115
-  miranda_v_arizona_case_id = 23601
-  rhode_island_v_innis_case_id = 26918
-
-  year_interval = 1940:2003
-  case_ids = c(brown_v_mississipi_case_id, escobedo_v_illinois_case_id, miranda_v_arizona_case_id, rhode_island_v_innis_case_id)
-  line_types = c(2, 3, 3, 3)
-  graph_labels = c('Brown v Mississippi', 'Escobedo v. Illinois', 'Miranda v. Arizona', 'Rhode Island v. Innis')
-  colors = c('blue', 'red', 'black', 'green')
-
+  year_interval = 1940:2000
   authority_df = read_auth()
-  labels = sapply(case_ids, FUN = case_data_by_id, get_all_judicial_cases_data())
-  print(labels)
-  indices = 1:length(case_ids)
-  pre_plot_case = function(index, authority_df, case_ids, year_interval, line_types, colors, onGraphProcessedCallback) {
-    if (index == 1) plot_function = plot
-    else plot_function = lines
-    plot_case(authority_df, case_ids[index], year_interval, plot_function, lty = line_types[index], col = colors[index], onGraphProcessedCallback = onGraphProcessedCallback)
+  judicial_df = read_judicial_data()
+
+  case_ids = c(18501, 23115, 23601, 26918)
+  plotting_functions = plot_functions(length(case_ids), xLab = 'Year', yLab = 'Authority Score')
+  graph_labels = get_graph_labels(case_ids, judicial_df)
+
+  pre_plot_case = function(index, authority_df, case_ids, onGraphProcessedCallback) {
+    plot_function = plotting_functions[[index]]
+    case_id = case_ids[index]
+    X = year_interval
+    Y = calculate_authority_score_in_range(authority_df, case_id, year_interval)
+    plot_function(X, Y)
   }
-  sapply(indices, FUN = pre_plot_case, authority_df, case_ids, year_interval, line_types, colors, onGraphProcessedCallback = onGraphProcessedCallback, xData = year_interval)
-  legend(year_interval[1], 0.06, graph_labels, cex = 0.8, col = colors, pch = rep(21, 4), lty = rep(1, 4))
+  sapply(1:length(case_ids), FUN = pre_plot_case, authority_df, case_ids, onGraphProcessedCallback = onGraphProcessedCallback)
+  legend(year_interval[1], 0.06, graph_labels, cex = 0.8, col = colors, pch = rep(21, length(case_ids)), lty = 1:length(case_ids))
 }
 
 onWSReadyCallback = function(ws) {
@@ -146,5 +141,5 @@ plot_figure_9 = function(onGraphProcessedCallback) {
 
 # plot_figure_9(function(a, b) { })
 # plot_figure_8(function(a, b) { })
-plot_figure_6(function(a, b) { })
-# plot_figure_10(function(a, b) { })
+# plot_figure_6(function(a, b) { })
+plot_figure_10(function(a, b) { })
