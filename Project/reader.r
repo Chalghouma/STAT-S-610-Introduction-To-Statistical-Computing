@@ -61,8 +61,8 @@ plot_figure_6 = function(onGraphProcessedCallback) {
   pre_plot_case = function(index, authority_df, case_ids, year_interval, line_types, colors, onGraphProcessedCallback) {
     if (index == 1) plot_function = plot
     else plot_function = lines
-    year_of_decision =case_data_by_id(case_ids[index],judicial_df)$year
-    year_interval = year_of_decision:(year_of_decision+30)
+    year_of_decision = case_data_by_id(case_ids[index], judicial_df)$year
+    year_interval = year_of_decision:(year_of_decision + 30)
     plot_case_for_6(authority_df, case_ids[index], year_interval, plot_function, lty = line_types[index], col = colors[index], onGraphProcessedCallback = onGraphProcessedCallback, xData = 0:30)
   }
   sapply(indices, FUN = pre_plot_case, authority_df, case_ids, year_interval, line_types, colors, onGraphProcessedCallback = onGraphProcessedCallback)
@@ -103,10 +103,10 @@ onWSReadyCallback = function(ws) {
 }
 # launch_server(onWSReadyCallback)
 
-plot_figure_8 = function(onGraphProcessedCallback){
+plot_figure_8 = function(onGraphProcessedCallback) {
 
   year_interval = 1850:2000
-  case_ids=c(1861, 1156,13828,19238)
+  case_ids = c(1861, 1156, 13828, 19238)
   line_types = c(2, 3, 3, 3)
   graph_labels = c('Brown v Mississippi', 'Escobedo v. Illinois', 'Miranda v. Arizona', 'Rhode Island v. Innis')
   colors = c('blue', 'red', 'black', 'green')
@@ -115,16 +115,37 @@ plot_figure_8 = function(onGraphProcessedCallback){
   labels = sapply(case_ids, FUN = case_data_by_id, get_all_judicial_cases_data())
   print(labels)
   indices = 1:length(case_ids)
-  pre_plot_case = function(index, authority_df, case_ids, year_interval, line_types, colors, onGraphProcessedCallback,xData) {
+  pre_plot_case = function(index, authority_df, case_ids, year_interval, line_types, colors, onGraphProcessedCallback, xData) {
     if (index == 1) plot_function = plot
     else plot_function = lines
-    plot_case(authority_df, case_ids[index], year_interval, plot_function, lty = line_types[index], col = colors[index], onGraphProcessedCallback = onGraphProcessedCallback,xData = xData)
+    plot_case(authority_df, case_ids[index], year_interval, plot_function, lty = line_types[index], col = colors[index], onGraphProcessedCallback = onGraphProcessedCallback, xData = xData)
+  }
+  sapply(indices, FUN = pre_plot_case, authority_df, case_ids, year_interval, line_types, colors, onGraphProcessedCallback = onGraphProcessedCallback, xData = year_interval)
+  legend(year_interval[1], 0.06, graph_labels, cex = 0.8, col = colors, pch = rep(21, 4), lty = rep(1, 4))
+}
+plot_figure_9 = function(onGraphProcessedCallback) {
+
+  year_interval = 1950:1970
+  case_ids = c(13828, 1016, 1156, 19238, 19230)
+  line_types = c(2, 3, 3, 3,3)
+  graph_labels = c('a','b','c','d','e')
+  colors = c('blue', 'red', 'black', 'green','black')
+
+  authority_df = read_auth()
+  labels = sapply(case_ids, FUN = case_data_by_id, get_all_judicial_cases_data())
+  print(labels)
+  indices = 1:length(case_ids)
+  pre_plot_case = function(index, authority_df, case_ids, year_interval, line_types, colors, onGraphProcessedCallback, xData) {
+    if (index == 1) plot_function = plot
+    else plot_function = lines
+    plot_case(authority_df, case_ids[index], year_interval, plot_function, lty = line_types[index], col = colors[index], onGraphProcessedCallback = onGraphProcessedCallback, xData = xData)
   }
   sapply(indices, FUN = pre_plot_case, authority_df, case_ids, year_interval, line_types, colors, onGraphProcessedCallback = onGraphProcessedCallback, xData = year_interval)
   legend(year_interval[1], 0.06, graph_labels, cex = 0.8, col = colors, pch = rep(21, 4), lty = rep(1, 4))
 }
 
-plot_figure_8(function(a,b){})
 
+plot_figure_9(function(a, b) { })
+# plot_figure_8(function(a, b) { })
 # plot_figure_6(function(a, b) { })
 # plot_figure_10(function(a, b) { })
