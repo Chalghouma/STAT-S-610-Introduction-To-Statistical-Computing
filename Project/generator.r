@@ -2,23 +2,21 @@ library(RSpectra)
 source('Project/source_paths.r')
 source(get_selector_file_path())
 source(get_hubs_authorities_io_file_path())
-library(testthat)
+source(get_reader_file_path())
 library(Matrix)
-library(readr)
 library(tidyverse)
 library(spam)
 
 generate_matrix <- function(until_year, csv_path = 'Project/data/judicial.csv', all_cities_path = 'Project/data/allcites.txt') {
-  cases = read_csv(csv_path)
-  my_data <- as_tibble(cases)
-  cu = cases_until(my_data, until_year)$caseid
-  dimension = length(cu)
+  judicial_df = read_judicial_data()
+  case_ids_until_year = get_cases_until(judicial_df, until_year)$caseid
+  dimension = length(case_ids_until_year)
   print(dimension)
   m = matrix(rep(0, dimension * dimension), nrow = dimension)
   lines = readLines(all_cities_path)
   lines_length = length(lines)
   line_index = 1
-  latest_case_id = length(cu)
+  latest_case_id = length(case_ids_until_year)
   has_surpassed_latest_case_id = FALSE
   while (line_index < lines_length & !has_surpassed_latest_case_id) {
     processed_line = parse_line(lines[line_index])

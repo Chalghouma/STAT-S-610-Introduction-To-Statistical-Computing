@@ -10,12 +10,12 @@ library(tidyverse)
 judicial_data <- read_judicial_data()
 
 test_that('We should have 9 cases up until 1764', {
-  cu = cases_until(my_data, 1764)[[1]]
+  cu = get_cases_until(judicial_data, 1764)[[1]]
   expect_equal(length(cu), 9)
 })
 
 test_that('Given ids should have the correct years', {
-  expect_equal(case_data_by_id(1,my_data)$year, 1754)
-  expect_equal(case_data_by_id(16125,my_data)$year, 1923)
-  expect_equal(case_data_by_id(26226,my_data)$year, 1976)
+  expect_equal(case_data_by_id(1,judicial_data)$year, 1754)
+  expect_equal(case_data_by_id(16125,judicial_data)$year, 1923)
+  expect_equal(case_data_by_id(26226,judicial_data)$year, 1976)
 })

@@ -56,6 +56,3 @@ plot_9 <- function(onGraphProcessedCallback){
 plot_10 <- function(onGraphProcessedCallback){
   plot_figure(  case_ids = c(18501, 23115, 23601, 26918),year_interval =  1940:2000,onGraphProcessedCallback)
 }
-
-
-plot_6(function(X,Y){})

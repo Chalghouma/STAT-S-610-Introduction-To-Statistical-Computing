@@ -9,7 +9,6 @@ library(jsonlite)
 plot_figure_6 <- function(case_ids, onGraphProcessedCallback) {
   plotting_functions = get_plot_functions(length(case_ids), xLab = 'Years after Decision', yLab = 'Authority Score')
   authority_df = read_authorities_df_from_year_interval(1850:1965)
-  print('auth_df generated')
   judicial_df = read_judicial_data()
   graph_labels = get_graph_labels(case_ids, judicial_df)
 
@@ -21,10 +20,6 @@ plot_figure_6 <- function(case_ids, onGraphProcessedCallback) {
     years_after_decision = 29
     year_interval = year_of_decision:(year_of_decision + years_after_decision)
     X = 0:years_after_decision
-    print('X = ')
-    print(X)
-    print(year_interval)
-    print('before applying Y')
     Y = sapply(year_interval, FUN = get_authority_from_generated_authorities_df, case_id, authority_df)
     onGraphProcessedCallback(X,-Y)
     
@@ -45,11 +40,7 @@ plot_figure <- function(case_ids, year_interval, onGraphProcessedCallback) {
     plot_function = plotting_functions[[index]]
     case_id = case_ids[index]
 
-    print('X = ')
     X = year_interval
-    print(X)
-    print(year_interval)
-    print('before applying Y')
     Y = sapply(year_interval, FUN = get_authority_from_generated_authorities_df, case_id, authority_df)
     onGraphProcessedCallback(X,-Y)
     plot_function(X, - Y)

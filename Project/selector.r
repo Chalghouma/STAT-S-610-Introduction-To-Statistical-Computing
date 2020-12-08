@@ -19,7 +19,7 @@ case_data_by_id <- function(case_id, df) {
 cases_in_range <- function(df, from, to) {
   return(df %>% filter(year >= from & year <= to))
 }
-cases_until <- function(df, until) {
+get_cases_until <- function(df, until) {
   first_year = df[1,]$year
   return(cases_in_range(df, first_year, until))
 }

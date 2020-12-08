@@ -26,6 +26,9 @@ get_plotter_utils_file_path <- function() {
 get_dynamic_plotter_file_path <- function() {
   return('Project/plotting/dynamic_plotter.r')
 }
+get_static_plotter_file_path <- function() {
+  return('Project/plotting/static_plotter.r')
+}
 #WebSockets Server
 get_web_sockets_server_file_path <- function() {
   return('Project/sockets/webserver.r')
