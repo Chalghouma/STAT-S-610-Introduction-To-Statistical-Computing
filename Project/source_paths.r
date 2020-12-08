@@ -28,5 +28,5 @@ get_dynamic_plotter_file_path <- function() {
 }
 #WebSockets Server
 get_web_sockets_server_file_path <- function() {
-  return('Project/ws.r')
+  return('Project/sockets/webserver.r')
 }
