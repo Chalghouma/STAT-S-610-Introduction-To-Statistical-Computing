@@ -2,7 +2,7 @@ library(jsonlite)
 library(httpuv)
 
 
-launch_server = function(onWSReadyCallback, host = '127.0.0.1', port = 5000) {
+launch_server <- function(onWSReadyCallback, host = '127.0.0.1', port = 5000) {
   s <- startServer(host = "127.0.0.1", port = 5000,
   list(
     onWSOpen = function(ws) {

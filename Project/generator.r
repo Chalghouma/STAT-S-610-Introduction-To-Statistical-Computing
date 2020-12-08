@@ -8,7 +8,7 @@ library(readr)
 library(tidyverse)
 library(spam)
 
-generate_matrix = function(until_year, csv_path = 'Project/data/judicial.csv', all_cities_path = 'Project/data/allcites.txt') {
+generate_matrix <- function(until_year, csv_path = 'Project/data/judicial.csv', all_cities_path = 'Project/data/allcites.txt') {
   cases = read_csv(csv_path)
   my_data <- as_tibble(cases)
   cu = cases_until(my_data, until_year)$caseid
@@ -35,8 +35,8 @@ generate_matrix = function(until_year, csv_path = 'Project/data/judicial.csv', a
 
 
 
-write_authority_hub_vectors = function(year, should_write_hub = TRUE, should_write_authority = TRUE) {
-  get_largest_eigen_vector = function(matrix) {
+write_authority_hub_vectors <- function(year, should_write_hub = TRUE, should_write_authority = TRUE) {
+  get_largest_eigen_vector <- function(matrix) {
     return(eigs(multiplied, k = 1, which = 'LM')$vectors[, 1])
   }
   print('Generating A')
@@ -60,7 +60,7 @@ write_authority_hub_vectors = function(year, should_write_hub = TRUE, should_wri
 }
 
 
-compute_authority = function(matrix) {
+compute_authority <- function(matrix) {
   sparse_A = Matrix(matrix, sparse = T)
   print('sparse_A calculated')
   sparse_tA = Matrix(t(sparse_A), sparse = T)
@@ -79,7 +79,7 @@ compute_authority = function(matrix) {
   # return ((1 / lev) * multiplied %*% h)
 }
 
-compute_hub = function(matrix) {
+compute_hub <- function(matrix) {
   sparse_A = Matrix(A, sparse = T)
   sparse_tA = Matrix(t(sparse_A), sparse = T)
   multiplied = sparse_tA %*% sparse_A
@@ -92,7 +92,7 @@ compute_hub = function(matrix) {
 # print(compute_authority(A))
 
 
-plot_authorities_for_case = function(from, until, case_id) {
+plot_authorities_for_case <- function(from, until, case_id) {
   year_interval = from:until
   authorities_for_case = c()
   # # # # # # # # # # overall_df = data.frame(row.names = 1:30288)

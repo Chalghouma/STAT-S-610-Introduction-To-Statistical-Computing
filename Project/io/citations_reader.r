@@ -1,5 +1,5 @@
 
-parse_line = function(line) {
+parse_line <- function(line) {
   splitted = str_split(line, ' ')[[1]]
   citing = splitted[1] %>% strtoi()
   cited = splitted[2] %>% strtoi()
@@ -7,7 +7,7 @@ parse_line = function(line) {
   return(list('citing' = citing, 'cited' = cited))
 }
 
-calculate_inward_outward = function(ids, file_path = 'Project/data/allcites.txt') {
+calculate_inward_outward <- function(ids, file_path = 'Project/data/allcites.txt') {
   inward_vector = rep(0, length(ids))
   outward_vector = rep(0, length(ids))
   lines = readLines(file_path)
