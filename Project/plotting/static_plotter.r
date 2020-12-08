@@ -26,6 +26,7 @@ plot_figure <- function(case_ids,year_interval,onGraphProcessedCallback){
   pre_plot_case <- function(index, authority_df, case_ids, onGraphProcessedCallback) {
     plot_function = plotting_functions[[index]]
     case_id = case_ids[index]
+
     X = year_interval
     Y = calculate_authority_score_in_range(authority_df, case_id, year_interval)
     onGraphProcessedCallback(X,Y)

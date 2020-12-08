@@ -18,7 +18,8 @@ get_auth_by_year <- function(auth_df, year) {
   # if(year < 1800 )
   if (year < 1800 | year > 2002)
     return(warning('Year should be between 1800 and 2002'))
-  return(auth_df[, (year - 1800) + 1 + 1])
+  return(auth_df[, paste('X', toString(year), sep = '')])
+  # return(auth_df[   ,(year - 1800) + 1 + 1])
 }
 
 calculate_authority_score_in_range <- function(authority_df, case_id, year_interval) {
@@ -26,5 +27,7 @@ calculate_authority_score_in_range <- function(authority_df, case_id, year_inter
     return(get_auth_by_year(authority_df, year)[case_id])
   }
   return(sapply(year_interval, FUN = get_authority_for_case, case_id))
-
 }
+
+# auth = read_auth()
+# head(auth[, 'X1700'])

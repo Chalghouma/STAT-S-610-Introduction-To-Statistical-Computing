@@ -14,8 +14,7 @@ test_that('Can plot static Figures 6/8/9/10', {
 })
 
 test_that('Can plot dynamic Figures 6/8/9/10', {
-  plot_static_figure_6(postProcessedCallback)
-  plot_static_figure_8(postProcessedCallback)
-  plot_static_figure_9(postProcessedCallback)
-  plot_static_figure_10(postProcessedCallback)
+  plot_dynamic_figure_8(postProcessedCallback)
+  plot_dynamic_figure_9(postProcessedCallback)
+  plot_dynamic_figure_10(postProcessedCallback)
 })

@@ -1,3 +1,4 @@
+#Some colors & function generation for the plotting
 colors = c('black', 'gray', 'blue', 'red', 'green')
 
 

@@ -13,8 +13,10 @@ onWSReadyCallback <- function(ws) {
 }
 
 # postProcessedCallback <-  onGraphProcessedCallback
-postProcessedCallback <-  function(X,Y){}
+postProcessedCallback <- function(X, Y) { }
 
 # launch_server(onWSReadyCallback)
-plot_static_figure_9(postProcessedCallback)
+# plot_static_figure_9(postProcessedCallback)
 # plot_figure_10(function(X,Y){})
+
+plot_dynamic_figure_10(postProcessedCallback)
