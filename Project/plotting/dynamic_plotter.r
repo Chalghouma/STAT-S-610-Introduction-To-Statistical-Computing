@@ -16,7 +16,7 @@ plot_figure_6 <- function(case_ids, onGraphProcessedCallback) {
     plot_function = plotting_functions[[index]]
     case_id = case_ids[index]
 
-    year_of_decision = case_data_by_id(case_ids[index], judicial_df)$year
+    year_of_decision = get_case_data_by_id(case_ids[index], judicial_df)$year
     years_after_decision = 29
     year_interval = year_of_decision:(year_of_decision + years_after_decision)
     X = 0:years_after_decision
