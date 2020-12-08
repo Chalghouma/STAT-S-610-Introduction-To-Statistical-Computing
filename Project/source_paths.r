@@ -23,3 +23,10 @@ get_plotter_file_path = function(){
 get_plotter_utils_file_path = function(){
     return ('Project/plotting/utils.r')
 }
+get_dynamic_plotter_file_path = function(){
+    return ('Project/plotting/dynamic_plotter.r')
+}
+#WebSockets Server
+get_web_sockets_server_file_path = function(){
+    return ('Project/ws.r')
+}

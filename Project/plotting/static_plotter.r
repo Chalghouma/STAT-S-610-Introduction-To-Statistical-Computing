@@ -1,6 +1,5 @@
 source('Project/source_paths.r')
 source(get_selector_file_path())
-# source('Project/ws.r')
 source(get_plotter_file_path())
 source(get_reader_file_path())
 library(readr)

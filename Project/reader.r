@@ -1,7 +1,6 @@
 source('Project/source_paths.r')
 source(get_selector_file_path())
 source(get_plotter_file_path())
-source('Project/ws.r')
 library(readr)
 library(jsonlite)
 
@@ -30,16 +29,3 @@ calculate_authority_score_in_range = function(authority_df, case_id, year_interv
   return(sapply(year_interval, FUN = get_authority_for_case, case_id))
 
 }
-
-
-
-
-onWSReadyCallback = function(ws) {
-  print('onWSReady')
-  onGraphProcessedCallback = function(year_interval, data) {
-    print('onGraphProcessedCallback')
-    ws$send(serializeJSON(list(year_interval = year_interval, data = data)))
-  }
-  plot_figure_10(onGraphProcessedCallback)
-}
-# launch_server(onWSReadyCallback)
