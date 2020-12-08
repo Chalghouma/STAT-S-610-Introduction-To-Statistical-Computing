@@ -1,10 +1,10 @@
-get_reader_file_path <- function() {
-  return('Project/reader.r')
-}
 get_selector_file_path <- function() {
   return('Project/selector.r')
 }
 #io
+get_reader_file_path <- function() {
+  return('Project/io/reader.r')
+}
 get_citations_reader_file_path <- function() {
   return('Project/io/citations_reader.r')
 }
