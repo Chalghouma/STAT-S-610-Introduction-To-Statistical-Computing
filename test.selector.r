@@ -1,15 +1,15 @@
 source('Project/source_paths.r')
 source(get_selector_file_path())
+source(get_reader_file_path())
 library(testthat)
 
 library(readr)
 library(tidyverse)
 
 
-cases = read_csv('Project/data/judicial.csv')
-my_data <- as_tibble(cases)
+judicial_data <- read_judicial_data()
 
-test_that('', {
+test_that('We should have 9 cases up until 1764', {
   cu = cases_until(my_data, 1764)[[1]]
   expect_equal(length(cu), 9)
 })

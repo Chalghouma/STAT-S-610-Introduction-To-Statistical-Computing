@@ -1,4 +1,3 @@
-# install.packages('tidyverse')
 library(tidyverse)
 
 get_all_judicial_cases_data <- function() {
