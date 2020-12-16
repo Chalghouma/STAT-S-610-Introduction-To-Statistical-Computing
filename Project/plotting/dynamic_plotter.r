@@ -30,6 +30,8 @@ plot_figure <- function(case_ids, year_interval, onGraphProcessedCallback) {
 
     X = year_interval
     Y = sapply(year_interval, FUN = get_authority_from_generated_authorities_df, case_id, authority_df)
+    #The RSpectra generates negative eigen vectors. By the time I had realized,
+    #the data was already stored
     onGraphProcessedCallback(X,-Y)
     plot_function(X, - Y)
   }

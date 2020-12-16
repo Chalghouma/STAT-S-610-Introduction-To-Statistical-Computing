@@ -1,5 +1,5 @@
 get_selector_file_path <- function() {
-  return('Project/selector.r')
+  return('Project/utils/selector.r')
 }
 #io
 get_reader_file_path <- function() {
@@ -14,7 +14,7 @@ get_hubs_authorities_io_file_path <- function() {
 
 #Generating
 get_generator_file_path <- function() {
-  return('Project/generator.r')
+  return('Project/utils/generator.r')
 }
 #Plotting
 get_plotter_file_path <- function() {
